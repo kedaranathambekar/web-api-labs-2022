@@ -69,4 +69,15 @@ router.post('/:userName/favourites', asyncHandler(async (req, res) => {
     const user = await User.findByUserName(userName).populate('favourites');
     res.status(200).json(user.favourites);
   }));
+
+  //Add a favourite. No Error Handling Yet. Can add duplicates too!
+router.post('/:userName/favourites', asyncHandler(async (req, res) => {
+  const newFavourite = req.body.id;
+  const userName = req.params.userName;
+  const movie = await movieModel.findByMovieDBId(newFavourite);
+  const user = await User.findByUserName(userName);
+  await user.favourites.push(movie._id);
+  await user.save(); 
+  res.status(201).json(user); 
+}));
 export default router;
